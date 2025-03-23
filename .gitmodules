@@ -1,0 +1,3 @@
+[submodule "api_ecom"]
+	path = api_ecom
+	url = git@github.com:him4lik/api_ecom.git
