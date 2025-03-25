@@ -1,3 +1,6 @@
 [submodule "api_ecom"]
 	path = api_ecom
 	url = git@github.com:him4lik/api_ecom.git
+[submodule "web_ecom"]
+	path = web_ecom
+	url = git@github.com:him4lik/web_ecom.git
