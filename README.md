@@ -63,11 +63,12 @@ This project is a Dockerized e-commerce platform with:
   ```
 ## Services
 
-| Service	  | Description	        | Image	        | Port
-| api	      | Django REST API	    | Custom build	| 8000
-| website	  | Django frontend	    | Custom build	| 8101
-| postgres	| PostgreSQL database	| postgres:14	  | 5432
-| mongodb	  | MongoDB database	  | mongo:5	      | 27017
+| Service	  | Description	        | Image	        | Port  |
+|-----------|---------------------|---------------|-------|
+| api	      | Django REST API	    | Custom build	| 8000  |
+| website	  | Django frontend	    | Custom build	| 8101  |
+| postgres	| PostgreSQL database	| postgres:14	  | 5432  |
+| mongodb	  | MongoDB database	  | mongo:5	      | 27017 |
 
 ##  Common Commands
 
