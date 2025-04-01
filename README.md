@@ -8,8 +8,8 @@ A complete inventory management system built with Django and Docker.
 - [Quick Start](#quick-start)
 - [Services](#services)
 - [Common Commands](#common-commands)
-- [Access Endpoints](#access-endpoints)
 - [Development](#development)
+- [Access Endpoints](#access-endpoints)
 
 ## Project Overview
 
@@ -63,14 +63,14 @@ This project is a Dockerized e-commerce platform with:
   ```
 ## Services
 
-Service	Description	Image	Port
-api	Django REST API	Custom build	8000
-website	Django frontend	Custom build	8101
-postgres	PostgreSQL database	postgres:14	5432
-mongodb	MongoDB database	mongo:5	27017
-Common Commands
+| Service	  | Description	        | Image	        | Port
+ ----------- --------------------- --------------- -----
+| api	      | Django REST API	    | Custom build	| 8000
+| website	  | Django frontend	    | Custom build	| 8101
+| postgres	| PostgreSQL database	| postgres:14	  | 5432
+| mongodb	  | MongoDB database	  | mongo:5	      | 27017
 
-Service Management
+##  Common Commands
 
 # Start all services
     dc up -d
@@ -85,11 +85,9 @@ Service Management
 # View logs
     dclogs api
     dclogs postgres
-Scaling Services
 
 # Scale API to 3 instances
     dc up -d api --scale api=3 --no-recreate
-Container Access
 
 # Access API container shell
     dshell  # using alias
@@ -99,27 +97,29 @@ Container Access
 # Access database containers
     docker exec -ti deploy-ecommerce_postgres_1 psql -U postgres
     docker exec -ti deploy-ecommerce_mongodb_1 mongosh
-Access Endpoints
 
-Website: http://localhost:8101
-API Docs: http://localhost:8000/docs (if implemented)
-Admin Panel: http://localhost:8101/admin
-Development
-
-Submodules
+##  Development
 
 # Initialize submodules
+  ```bash
     git submodule init
+  ```
 
 # Update submodules
+  ```bash
     git submodule update --remote
-Running Migrations
+  ```
 
 # API migrations
     docker exec deploy-ecommerce_api_1 python manage.py migrate
 
 # Website migrations
     docker exec deploy-ecommerce_website_1 python manage.py migrate
-Creating Superuser
+# Creating Superuser
 
     docker exec -ti deploy-ecommerce_api_1 python manage.py createsuperuser
+##  Access Endpoints
+
+# Website: http://localhost:8101
+# Website Admin Panel: http://localhost:8101/admin
+# API Admin Panel: http://localhost:8001/admin
