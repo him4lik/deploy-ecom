@@ -1,0 +1,43 @@
+services:
+    api:
+        ports:
+            - "8001:8000"
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env_dev
+        deploy:
+            resources:
+                limits:
+                    memory: 3G
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+    postgres:
+        ports:
+            - "9803:5432"
+        restart: always
+        volumes:
+            - ../ecommerce_data:/data
+        deploy:
+            resources:
+                limits:
+                    memory: 2G
+    website:
+        ports:
+            - "8101:8000"
+        volumes:    
+            - ./web_ecom:/code
+        env_file: .env_dev
+        deploy:
+            resources:
+                limits:
+                    memory: 3G
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    mongodb:
+        restart: always
+        ports:
+            - "27017:27017"
+        volumes:
+            - ../mongo_data:/data/db
+        env_file: .env_dev

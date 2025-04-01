@@ -1,0 +1,19 @@
+services:
+    api:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.django
+
+    postgres:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.postgres
+    
+    website:
+        build:
+            context: ./web_ecom
+            dockerfile: Dockerfile.django
+    mongodb:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.mongodb
