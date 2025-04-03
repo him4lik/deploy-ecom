@@ -30,7 +30,7 @@ This project is a Dockerized e-commerce platform with:
 
 1. **Clone the repository**:
    ```bash
-   git clone --recurse-submodules [https://github.com/your-repo/ecommerce-platform.git](https://github.com/him4lik/deploy-ecom.git)
+   git clone --recurse-submodules https://github.com/him4lik/deploy-ecom.git
    cd deploy-ecom
    ```
 2. **Set up aliases (add to ~/.bash_aliases or ~/.zshrc)**:
