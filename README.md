@@ -30,8 +30,8 @@ This project is a Dockerized e-commerce platform with:
 
 1. **Clone the repository**:
    ```bash
-   git clone --recurse-submodules https://github.com/your-repo/ecommerce-platform.git
-   cd ecommerce-platform
+   git clone --recurse-submodules [https://github.com/your-repo/ecommerce-platform.git](https://github.com/him4lik/deploy-ecom.git)
+   cd deploy-ecom
    ```
 2. **Set up aliases (add to ~/.bash_aliases or ~/.zshrc)**:
   ```bash
@@ -40,7 +40,7 @@ This project is a Dockerized e-commerce platform with:
 
 3. **API container shell access**:
    ```bash
-    alias dshell='docker exec -ti deploy-ecommerce_api_1 /bin/bash'
+    alias dshell='docker exec -ti <container-name> /bin/bash'
    ```
 4. **Logs helper**:
    ```bash
@@ -92,11 +92,11 @@ This project is a Dockerized e-commerce platform with:
 #### Access API container shell
     dshell  # using alias
 #### OR
-    docker exec -ti deploy-ecommerce_api_1 /bin/bash
+    docker exec -ti <container-name> /bin/bash
 
 #### Access database containers
-    docker exec -ti deploy-ecommerce_postgres_1 psql -U postgres
-    docker exec -ti deploy-ecommerce_mongodb_1 mongosh
+    docker exec -ti <container-name> psql -U postgres
+    docker exec -ti <container-name> mongosh
 
 ##  Development
 
@@ -111,13 +111,18 @@ This project is a Dockerized e-commerce platform with:
   ```
 
 #### API migrations
-    docker exec deploy-ecommerce_api_1 python manage.py migrate
+    docker exec <api-container-name> python manage.py migrate
+#### Populate test data:
+```bash
+  docker exec -ti <api-container-name> /bin/bash
+  python manage.py populate_test_data
+```
 
 #### Website migrations
-    docker exec deploy-ecommerce_website_1 python manage.py migrate
+    docker exec <website-container-name> python manage.py migrate
 #### Creating Superuser
 
-    docker exec -ti deploy-ecommerce_api_1 python manage.py createsuperuser
+    docker exec -ti <api-container-name> python manage.py createsuperuser
 ##  Access Endpoints
 
 #### Website: http://localhost:8101
