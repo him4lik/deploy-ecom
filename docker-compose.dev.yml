@@ -32,12 +32,4 @@ services:
                 limits:
                     memory: 3G
         extra_hosts:
-            - "host.docker.internal:host-gateway"
-
-    mongodb:
-        restart: always
-        ports:
-            - "27017:27017"
-        volumes:
-            - ../mongo_data:/data/db
-        env_file: .env_dev
+            - "host.docker.internal:host-gateway" 
