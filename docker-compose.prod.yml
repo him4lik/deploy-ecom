@@ -4,78 +4,110 @@ services:
         ports:
             - "80:80"
             - "443:443"
+        command:
+            - "--providers.docker=true"
+            - "--entrypoints.web.address=:80"
+            - "--api.insecure=true"  
         volumes:
-            - "./traefik:/etc/traefik" 
-            - "./letsencrypt:/letsencrypt"
             - "/var/run/docker.sock:/var/run/docker.sock:ro"
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.dashboard.entrypoints=websecure"
-            - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-            - "traefik.http.routers.dashboard.service=api@internal"
-            - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
         networks:
             - prod
         deploy:
-            mode: replicated
-            replicas: 1
+            mode: global  
+
+    postgres:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.postgres
+        restart: always
+        volumes:
+            - ../ecommerce_data:/data
+        deploy:
             resources:
                 limits:
                     memory: 2G
-
-    api:
-        volumes:
-            - static:/code/static
-        env_file: .env
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.api-secure.entrypoints=websecure"
-            - "traefik.http.routers.api-secure.rule=Host(`localhost`) && PathPrefix(`/api/v1/`)"
-            - "traefik.http.routers.api-secure.tls.certresolver=myresolver"
-        deploy:
-            mode: replicated
-            replicas: 3
-
-
-        deploy:
-            mode: replicated
-            replicas: 1
-            resources:
-              limits:
-                memory: 3G
-        healthcheck:
-            test: curl --fail http://localhost:8000/api/v1/admin/ || exit 1
-            interval: 30s
-            retries: 10
-              # start_interval: 30s
-            start_period: 30m
-            timeout: 5s
         networks:
             - prod
-        stop_grace_period: 30s
+
+    api:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.django
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env
+        deploy:
+            replicas: 3
+            resources:
+                limits:
+                    memory: 3G
+        extra_hosts:
+            - "localhost:host-gateway" # to be removed in production
+        networks:
+            - prod
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.api.rule=PathPrefix(`/api/v1/`)"
+            - "traefik.http.routers.api.entrypoints=web"
+            - "traefik.http.services.api.loadbalancer.server.port=8000"
 
     website:
         build:
-            context: ./website
+            context: ./web_ecom
             dockerfile: Dockerfile.django
         volumes:
-            - static:/static
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.website.entrypoints=web"
-            - "traefik.http.routers.website.middlewares=redirect-to-https@file"
-            - "traefik.http.routers.website.rule=Host(`localhost`)"
-            - "traefik.http.routers.website-secure.entrypoints=websecure"
-            - "traefik.http.routers.website-secure.rule=Host(`localhost`)"
-            - "traefik.http.routers.website-secure.tls.certresolver=myresolver"
-            - "traefik.http.routers.static-secure.entrypoints=websecure"
-            - "traefik.http.routers.static-secure.rule=Host(`localhost`) && PathPrefix(`/api/v1/static/`)"
-            - "traefik.http.routers.static-secure.tls.certresolver=myresolver"
-        networks:
-            - prod
+            - ./web_ecom:/code
+        env_file: .env
         deploy:
-            mode: replicated
-            replicas: 1
+            replicas: 3
             resources:
                 limits:
-                    memory: 2G
+                    memory: 3G
+        extra_hosts:
+            - "localhost:host-gateway" # to be removed in production
+        networks:
+            - prod
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.website.rule=PathPrefix(`/`) && !PathPrefix(`/api/v1/`)"
+            - "traefik.http.routers.website.entrypoints=web"
+            - "traefik.http.services.website.loadbalancer.server.port=8000"
+
+    redis:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.redis
+        image: redis:7
+        container_name: redis
+        ports:
+            - "6379:6379"
+        restart: always
+        volumes:
+            - ../redis_data:/data
+        networks:
+            - prod
+
+    beat:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.beat
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env
+        networks:
+            - prod
+
+    worker:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.worker
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env
+        restart: always
+        networks:
+            - prod
+
+networks:
+    prod:
+        driver: bridge

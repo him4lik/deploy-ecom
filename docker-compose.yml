@@ -1,15 +1,30 @@
 services:
-    api:
-        build:
-            context: ./api_ecom
-            dockerfile: Dockerfile.django
-
     postgres:
         build:
             context: ./api_ecom
             dockerfile: Dockerfile.postgres
+            
+    api:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.django
     
     website:
         build:
             context: ./web_ecom
             dockerfile: Dockerfile.django
+
+    redis:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.redis
+
+    beat:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.beat
+    
+    worker:
+        build:
+            context: ./api_ecom
+            dockerfile: Dockerfile.worker

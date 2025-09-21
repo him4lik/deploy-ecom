@@ -1,4 +1,29 @@
 services:
+    traefik:
+        image: traefik:v3.0
+        ports:
+            - "80:80"
+            - "443:443"
+        command:
+            - "--providers.docker=true"
+            - "--entrypoints.web.address=:80"
+            - "--api.insecure=true" 
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        networks:
+            - web
+
+    postgres:
+        restart: always
+        volumes:
+            - ../ecommerce_data:/data
+        deploy:
+            resources:
+                limits:
+                    memory: 2G
+        networks:
+            - web
+
     api:
         ports:
             - "8001:8000"
@@ -10,17 +35,15 @@ services:
                 limits:
                     memory: 3G
         extra_hosts:
-            - "host.docker.internal:host-gateway"
-    postgres:
-        ports:
-            - "9803:5432"
-        restart: always
-        volumes:
-            - ../ecommerce_data:/data
-        deploy:
-            resources:
-                limits:
-                    memory: 2G
+            - "localhost:host-gateway" # to be removed in production
+        networks:
+            - web
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.api.rule=PathPrefix(`/api/test1/`)"
+            - "traefik.http.routers.api.entrypoints=web"
+            - "traefik.http.services.api.loadbalancer.server.port=8000"
+
     website:
         ports:
             - "8101:8000"
@@ -32,4 +55,34 @@ services:
                 limits:
                     memory: 3G
         extra_hosts:
-            - "host.docker.internal:host-gateway" 
+            - "localhost:host-gateway" # to be removed in production
+        networks:
+            - web
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.website.rule=PathPrefix(`/`) && !PathPrefix(`/api/test1/`)"
+            - "traefik.http.routers.website.entrypoints=web"
+            - "traefik.http.services.website.loadbalancer.server.port=8000"
+
+    redis:
+        container_name: redis
+        ports:
+            - "6379:6379"
+        restart: always
+        volumes:
+            - ../redis_data:/data
+
+    beat:
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env_dev
+
+    worker:
+        volumes:
+            - ./api_ecom:/code
+        env_file: .env_dev
+        restart: always
+
+networks:
+    web:
+        driver: bridge
