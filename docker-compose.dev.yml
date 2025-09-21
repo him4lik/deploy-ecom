@@ -43,6 +43,9 @@ services:
             - "traefik.http.routers.api.rule=PathPrefix(`/api/test1/`)"
             - "traefik.http.routers.api.entrypoints=web"
             - "traefik.http.services.api.loadbalancer.server.port=8000"
+        depends_on:
+            - postgres
+            - redis
 
     website:
         ports:
@@ -63,6 +66,9 @@ services:
             - "traefik.http.routers.website.rule=PathPrefix(`/`) && !PathPrefix(`/api/test1/`)"
             - "traefik.http.routers.website.entrypoints=web"
             - "traefik.http.services.website.loadbalancer.server.port=8000"
+        depends_on:
+            - postgres
+            - redis
 
     redis:
         container_name: redis
@@ -71,17 +77,25 @@ services:
         restart: always
         volumes:
             - ../redis_data:/data
+        networks:
+            - web
 
     beat:
         volumes:
             - ./api_ecom:/code
         env_file: .env_dev
+        depends_on:
+            - api
+            - redis
 
     worker:
         volumes:
             - ./api_ecom:/code
         env_file: .env_dev
         restart: always
+        depends_on:
+            - api
+            - redis
 
 networks:
     web:
