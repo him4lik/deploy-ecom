@@ -63,7 +63,7 @@ services:
             - web
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.website.rule=PathPrefix(`/`) && !PathPrefix(`/api/test1`) || PathPrefix(`/web/media`)"
+            - "traefik.http.routers.website.rule=!PathPrefix(`/api/media`) && !PathPrefix(`/api/test1`) || PathPrefix(`/web/media`)"
             - "traefik.http.routers.website.entrypoints=web"
             - "traefik.http.services.website.loadbalancer.server.port=8000"
         depends_on:
