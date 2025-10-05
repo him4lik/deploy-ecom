@@ -31,6 +31,23 @@ Go to the project directory and run the following command to start all services:
 dcrestartdev # for dev environment
 dcrestartprod # for prod environmment
 ```
+
+### 3. Populate test data for api container
+Go to the project directory and run the following command:
+
+```bash
+devshell_api
+python manage.py populate_test_data
+```
+
+### 3. Populate test data for website container
+Go to the project directory and run the following command:
+
+```bash
+devshell_website
+python manage.py populate_test_data
+```
+
 ### 4. Test IT
 Go to this url - [http://localhost/](http://localhost/)
 
