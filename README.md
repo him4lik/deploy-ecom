@@ -6,9 +6,21 @@ A complete e-commerce platform built with Django as primary framework.
 
 This project is a Dockerized e-commerce platform with:
 - **Backend**: Django REST Framework (`api_ecom` submodule)
+  - The core REST API backend for the inventory management system, featuring:
+    - Product catalog management
+    - JWT authentication
+    - Database support (PostgreSQL)
+    - Razorpay Integration
+    - Order placement and management
 - **Frontend**: Django templates (`web_ecom` submodule)
+  - The Django template-based frontend for the inventory management system, featuring:
+    - Product catalog browsing
+    - Shopping cart functionality
+    - Admin dashboard integration
+    - Razorpay screens
+    - User orders management.
 - **Database**:
-  - PostgreSQL (relational data)
+  - PostgreSQL (relational database)
 
 ## Prerequisites
 
