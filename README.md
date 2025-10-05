@@ -2,6 +2,10 @@
 
 A complete e-commerce platform built with Django as primary framework.
 
+---
+
+Watch this video for quick setup and demo -  [Quick Setup and Demo](https://drive.google.com/file/d/1nMQJdZtHZiVLOH1urN5BXuwVUQabkAYQ/view?usp=sharing)
+
 ## Project Overview
 
 This project is a Dockerized e-commerce platform with:
